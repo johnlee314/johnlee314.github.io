@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Name Generator</title>
+    <link rel="shortcut icon" href="dice.png" type="image/x-icon">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-image: url('b.png');
+            background-size: cover; 
+            background-repeat: no-repeat; 
+        }
+
+        .btn-primary, .offcanvas {
+            background-color: rgb(105,108,255) !important;
+            color: rgb(255,255,255) !important;
+        }
+
+        .btn-primary {
+            border: none !important;
+        }
+
+        .center {
+            display: block;
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+
+        .text-gold {
+            color: rgb(247,203,88) !important;
+        }
+
+        @media (max-width: 768px) {
+            .center {
+                width: 100%;
+            }
+
+            #btnDraw {
+                display: block;
+                margin: 10px auto; 
+            }
+
+            .result {
+                text-align: center;
+            }
+        }
+
+        @keyframes jump {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        .jump {
+            animation: jump 0.5s ease;
+        }
+      
+    </style>
+
+</head>
+<body>
+    
+    <div class="container-fluid">
+        
+        <div class="my-3">
+            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#namelist">
+                Add names
+            </button>
+
+            <!-- offcanvas names -->
+            <div class="offcanvas offcanvas-start" tabindex="-1" id="namelist">
+                <div class="offcanvas-header">
+                  <h5 class="offcanvas-title">Configure List</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <div class="mb-3">
+                        <small class="form-label">Enter the names seperated by commas</small>
+                        <textarea class="form-control" id="names" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+            <!-- end offcanvas names -->
+
+            <!-- name generator -->
+            <button class="btn btn-primary btn-lg rounded-pill center py-3 px-5 mt-5 mb-3 shadow" id="btnDraw">Draw</button>
+            
+            <div class="text-center text-gold h1 mb-3 mt-5 fw-bold">And the luck one is...</div>
+            <img id="gifImage" src="draw.gif" class="center d-none">
+            <div class="result text-center text-white h2 fw-bold mt-5" id="result"></div>
+            <img id="congrats" src="c.gif" class="center d-none mt-5" width="400px">
+           
+            <!-- end name generator -->
+        </div>
+       
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+    <script>
+    $(document).ready(function() {
+    $('#btnDraw').on('click', function() {
+        var names = $('#names').val().split(',').map(function(name) {
+            return name.trim();
+        }).filter(function(name) {
+            return name.length > 0;
+        });
+
+        var $gifImage = $('#gifImage');
+        var $congrats = $('#congrats');
+        var $result = $('#result');
+
+        // Hide previous congratulations if any
+        $congrats.addClass('d-none');
+        $result.text(''); // Clear previous result
+
+        if (names.length > 0) {
+            var randomIndex = Math.floor(Math.random() * names.length);
+            var randomName = names[randomIndex];
+
+            $gifImage.removeClass('d-none'); // Show the GIF
+            
+            // Set timeout to hide GIF, show the result and congratulations image after 3 seconds
+            setTimeout(function() {
+                $gifImage.addClass('d-none'); // Hide the GIF
+                
+                $result.text(randomName); // Show the new name
+                $result.addClass('jump'); // Add jump animation class
+                
+                $congrats.removeClass('d-none'); // Show the congratulations image
+                
+                // Remove the jump class after animation to allow re-animation
+                setTimeout(function() {
+                    $result.removeClass('jump');
+                }, 500); // Duration of the animation
+                
+                // Hide congratulations image after 3 seconds
+                setTimeout(function() {
+                    $congrats.addClass('d-none');
+                }, 3000); // Adjust time as needed
+
+            }, 3000); // Adjust the time as needed
+
+        } else {
+            $result.text('Please enter some names.');
+        }
+    });
+});
+
+    </script>
+
+</body>
+</html>
